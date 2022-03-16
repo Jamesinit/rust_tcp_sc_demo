@@ -1,0 +1,17 @@
+[package]
+name = "tcp_server"
+version = "0.1.0"
+authors = ["simonkorl <machuan0228@sina.com>"]
+edition = "2018"
+# build = "src/build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mio = { version = "0.7", features = ["os-poll", "net"] }
+dtp_utils = { path = "../dtp_utils" }
+log = { version = "0.4", features = ["std"] }
+ring = "0.16"
+time = "0.1"
+env_logger = "0.6"
+docopt = "1"

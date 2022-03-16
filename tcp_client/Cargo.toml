@@ -1,0 +1,19 @@
+[package]
+name = "tcp_client"
+version = "0.1.0"
+authors = ["simonkorl <machuan0228@sina.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ring = "0.16"
+time = "0.1"
+regex = "1"
+lazy_static = "1"
+log = { version = "0.4", features = ["std"] }
+mio = { version = "0.7", features = ["os-poll", "net"]}
+url = "1"
+docopt = "1"
+env_logger = "0.8"
+dtp_utils = { path = "../dtp_utils" }
