@@ -1,0 +1,3 @@
+FROM test_base
+COPY ./aitrans-server /home/aitrans-server
+WORKDIR /home/aitrans-server

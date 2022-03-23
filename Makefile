@@ -13,6 +13,11 @@ test: server client
 	sleep 0.1
 	cd aitrans-server && ./run_client.sh
 
+image_test_build: server client
+	cp tcp_server/target/release/tcp_server aitrans-server/bin/server
+	cp tcp_client/target/release/tcp_client aitrans-server/client
+	sudo docker build . -f dockerfile_test -t test
+
 image_build:
 	sudo docker build . -t simonkorl0228/qoe_test_image:9.0.1
 

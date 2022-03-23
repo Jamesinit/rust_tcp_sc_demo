@@ -15,3 +15,4 @@ COPY --from=build \
     /build/tcp_server/target/release/tcp_server /home/aitrans-server/bin/server
 COPY --from=build \
     /build/tcp_client/target/release/tcp_client /home/aitrans-server/client
+WORKDIR /home/aitrans-server

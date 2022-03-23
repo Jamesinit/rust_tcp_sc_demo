@@ -13,5 +13,5 @@ dtp_utils = { path = "../dtp_utils" }
 log = { version = "0.4", features = ["std"] }
 ring = "0.16"
 time = "0.1"
-env_logger = "0.6"
+env_logger = "0.8"
 docopt = "1"
