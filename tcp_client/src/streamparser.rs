@@ -69,6 +69,7 @@ impl StreamParser {
                     // self.record_block();
                     assert_eq!(cost, self.bytes.drop(cost));
                     self.cur_block.end_timestamp = get_current_usec();
+                    assert!(self.cur_block.end_timestamp >= self.cur_block.start_timestamp);
                     self.cur_block.bct = (self.cur_block.end_timestamp - self.cur_block.start_timestamp) / 1000;
                     debug!("final block: {:?}", self.cur_block);
                     ret.push(self.cur_block);

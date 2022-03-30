@@ -96,10 +96,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut amount = 0;
     let mut client_stream: Option<TcpStream> = None;
     
-    let mut gap_sum: Vec<u64> = vec![0; cfgs.len()]; // ms
-    gap_sum[0] = cfgs[0].send_time_gap as u64 * 1_000_000;
+    let mut gap_sum: Vec<u64> = vec![0; cfgs.len()]; // us
+    gap_sum[0] = (cfgs[0].send_time_gap * 1_000_000.0) as u64;
     for i in 1..cfgs.len() {
-        gap_sum[i] = cfgs[i].send_time_gap as u64 * 1_000_000 + gap_sum[i - 1];
+        gap_sum[i] = (cfgs[i].send_time_gap * 1_000_000.0) as u64 + gap_sum[i - 1];
     }
     
     let mut send_amount = 0;
@@ -199,6 +199,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                                     while send_amount < amount {
                                         // prepare data
                                         unsafe {
+                                            while(gap_sum[send_amount] + start_timestamp.clone().unwrap() > get_current_usec()){}
                                             // create fake dtp header
                                             let mut hdr: [u8; 40] = [0; 40];
                                             let amount_bytes = (send_amount as u64).to_be_bytes();
