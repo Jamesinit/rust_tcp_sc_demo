@@ -20,6 +20,9 @@ use std::path::Path;
 use mio::{Token, Poll, event::*, Interest};
 use mio::net::{TcpListener, TcpStream};
 
+use nix::sys::{socket, socket::sockopt::TcpCongestion};
+use std::{os::unix::io::AsRawFd, ffi::OsString};
+
 macro_rules! log {
     ($file:expr, $display:expr, $($arg:tt)*) => {
         let s = format!($($arg)*);
@@ -68,8 +71,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     
     // println!("socket_addr: {:?}", socket_addr);
-    
+    // create TCP listener
     let mut tcp_server = TcpListener::bind(socket_addr)?;
+    if let Ok(val) = socket::getsockopt::<TcpCongestion>(tcp_server.as_raw_fd(), TcpCongestion) {
+        println!("{:?}", val);
+    }
+    
+    match socket::setsockopt(tcp_server.as_raw_fd(), TcpCongestion, &OsString::from("reno")) {
+        Ok(()) => println!("set cc to reno"),
+        Err(e) => println!("setsockopt err {:?}", e),
+    }
+    
+    if let Ok(val) = socket::getsockopt::<TcpCongestion>(tcp_server.as_raw_fd(), TcpCongestion) {
+        println!("{:?}", val);
+    }
     
     let mut poll = Poll::new()?;
     
