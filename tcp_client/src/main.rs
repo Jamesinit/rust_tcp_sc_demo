@@ -107,25 +107,30 @@ fn main () -> Result<(), Box<dyn Error>>{
         if events.is_empty() {
             // TIMEOUT
             println!("Client TIMEOUT. Quiting...");
-            
             let mut good_bytes: u64 = 0;
             for block in block_vec.iter() {
                 if block.bct < block.deadline as u64 {
                     good_bytes += block.block_size as u64;
                 }
             }
+
+            let mut complete_bytes: u64 = 0;
+            for block in block_vec.iter() {
+                complete_bytes += block.block_size as u64;
+            }
+
             let s =
                 format!("connection closed, recv=-1 sent=-1 lost=-1 rtt=-1 cwnd=-1, total_bytes={}, complete_bytes={}, good_bytes={}, total_time={}\n", 
                     total_bytes, 
-                    total_bytes,
+                    complete_bytes,
                     good_bytes,
                     start_timestamp.elapsed().as_micros()
                 );
-            match file.write_all(s.as_bytes()) {
-                Err(why) => panic!("couldn't write to {}: {}", display, why),
-                _ => (),
-            }
-                break;
+                match file.write_all(s.as_bytes()) {
+                    Err(why) => panic!("couldn't write to {}: {}", display, why),
+                    _ => (),
+                }
+            break;
         }
     
         for event in events.iter() {
@@ -198,10 +203,16 @@ fn main () -> Result<(), Box<dyn Error>>{
                                     good_bytes += block.block_size as u64;
                                 }
                             }
+
+                            let mut complete_bytes: u64 = 0;
+                            for block in block_vec.iter() {
+                                complete_bytes += block.block_size as u64;
+                            }
+
                             let s =
                                 format!("connection closed, recv=-1 sent=-1 lost=-1 rtt=-1 cwnd=-1, total_bytes={}, complete_bytes={}, good_bytes={}, total_time={}\n", 
                                     total_bytes, 
-                                    total_bytes,
+                                    complete_bytes,
                                     good_bytes,
                                     start_timestamp.elapsed().as_micros()
                                 );
