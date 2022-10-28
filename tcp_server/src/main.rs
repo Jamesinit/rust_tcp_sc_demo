@@ -42,7 +42,7 @@ Options:
 ";
 
 
-const TIMEOUT: u64 = 5000;
+const TIMEOUT: u64 = 50000;
 const MAX_BLOCK_SIZE: usize = 1000000;
 static mut DATA_BUF: [u8; MAX_BLOCK_SIZE + 10000] = [0; MAX_BLOCK_SIZE + 10000];
 
@@ -274,7 +274,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let end_timestamp = Some(get_current_usec());
     eprintln!("connection closed, you can see result in client.log");
     
-    let total_time = end_timestamp.unwrap() - start_timestamp.unwrap(); 
+    let mut total_time = 0;
+    if start_timestamp.is_none() {
+        eprintln!("no start time!");
+    } else {
+        total_time = end_timestamp.unwrap() - start_timestamp.unwrap(); 
+    }
     let throughput: f64;
     if (total_time as f64 / 1000.0 / 1000.0 ) == 0.0 {
         throughput = 99999999999999999.0;
