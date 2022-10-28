@@ -43,10 +43,16 @@ struct BlockInfo {
 fn main () -> Result<(), Box<dyn Error>>{
     
     let path = Path::new("client.log");
+    let log_path = Path::new("client.csv");
     let display = path.display();
     // Open a file in write-only mode, returns `io::Result<File>`
     let mut file = match File::create(&path) {
         Err(why) => panic!("couldn't create {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    let mut log_file = match File::create(&log_path) {
+        Err(why) => panic!("couldn't create {}: {}", log_path.display(), why),
         Ok(file) => file,
     };
     
@@ -92,8 +98,14 @@ fn main () -> Result<(), Box<dyn Error>>{
     
     let mut pkt_count = 0;
     let s =
-    format!("test begin!\n\nBlockID\tbct\tBlockSize\tPriority\tDeadline\n");
+        format!("test begin!\n\nBlockID\tbct\tBlockSize\tPriority\tDeadline\n");
     match file.write_all(s.as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        _ => (),
+    }
+    let s =
+        format!("block_id,bct,size,priority,deadline,duration\n");
+    match log_file.write_all(s.as_bytes()) {
         Err(why) => panic!("couldn't write to {}: {}", display, why),
         _ => (),
     }
@@ -190,6 +202,20 @@ fn main () -> Result<(), Box<dyn Error>>{
                                     match file.write_all(s.as_bytes()) {
                                         Err(why) =>
                                         panic!("couldn't write to {}: {}", display, why),
+                                        _ => (),
+                                    }
+
+                                    let s = format!("{},{},{},{},{},{}\n", 
+                                        block.id, 
+                                        block.bct, 
+                                        block.block_size, 
+                                        block.priority, 
+                                        block.deadline,
+                                        start_timestamp.elapsed().as_micros()
+                                    );
+                                    match log_file.write_all(s.as_bytes()) {
+                                        Err(why) =>
+                                        panic!("couldn't write to {}: {}", log_path.display(), why),
                                         _ => (),
                                     }
                                 }

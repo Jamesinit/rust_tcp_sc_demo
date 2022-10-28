@@ -202,7 +202,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                                             while(gap_sum[send_amount] + start_timestamp.clone().unwrap() > get_current_usec()){}
                                             // create fake dtp header
                                             let mut hdr: [u8; 40] = [0; 40];
-                                            let amount_bytes = (send_amount as u64).to_be_bytes();
+                                            let amount_bytes = ((send_amount * 4 + 5) as u64).to_be_bytes();
                                             hdr[0..8].clone_from_slice(&amount_bytes);
                                             let timestamp = start_timestamp.clone().unwrap() + gap_sum[send_amount];
                                             let timestamp_bytes = timestamp.to_be_bytes();
