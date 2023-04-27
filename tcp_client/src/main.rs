@@ -42,7 +42,7 @@ struct BlockInfo {
 
 fn main () -> Result<(), Box<dyn Error>>{
     
-    let path = Path::new("client.log");
+    let path = Path::new("tcp_client.log");
     let log_path = Path::new("client.csv");
     let display = path.display();
     // Open a file in write-only mode, returns `io::Result<File>`
